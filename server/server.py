@@ -12,6 +12,7 @@ delete_query = '''DELETE FROM utmp WHERE host = ?'''
 def connect_db():
 	return sqlite3.connect(app.config['DATABASE'])
 
+
 @app.before_request
 def before_request():
 	g.db = connect_db()
