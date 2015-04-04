@@ -1,6 +1,6 @@
 from flask import Flask, request, g, Response
 from auth import requires_auth
-import datetime, msgpack, os.path, sqlite3
+import datetime, json, msgpack, os.path, sqlite3
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -86,6 +86,10 @@ def list():
 	if best_mimetype == 'application/x-msgpack':
 		return Response(msgpack.packb(logins), 200,
 		                {'Content-Type': 'application/x-msgpack'})
+
+	elif best_mimetype == 'application/json':
+		return Response(json.dumps(logins), 200,
+		                {'Content-Type': 'application/json'})
 
 	else:
 		response = ''
