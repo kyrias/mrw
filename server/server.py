@@ -77,6 +77,16 @@ def update():
 	update_utmp(g.db, hostname, logins)
 	return Response('Update successful for host {}'.format(hostname), status=200)
 
+@app.route('/list')
+def list():
+	rows = g.db.cursor().execute("SELECT * FROM utmp").fetchall()
+	logins = dict_from_rows(rows)
+
+	best_mimetype = request.accept_mimetypes.best
+	if best_mimetype == 'application/x-msgpack':
+		return Response(msgpack.packb(logins), 200,
+		                {'Content-Type': 'application/x-msgpack'})
+
 
 if __name__ == '__main__':
 	db_path = app.config['DATABASE']
