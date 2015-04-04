@@ -1,7 +1,6 @@
-import msgpack, platform, pyinotify, utmp, config
+import msgpack, platform, pyinotify, requests, utmp, config
 from utmp.reader import UTmpRecordType
 from util import get_uid
-from requests import put
 
 class EventHandler(pyinotify.ProcessEvent):
 	def process_IN_MODIFY(self, event):
@@ -35,8 +34,8 @@ def upload():
 		login_list.append(record_to_dict(login))
 
 	data = msgpack.packb(login_list)
-	put(config.server_endpoint, data=data,
-	    auth=(platform.node(), config.password))
+	requests.put(config.server_endpoint, data=data,
+	             auth=(platform.node(), config.password))
 
 def main():
 	upload()
