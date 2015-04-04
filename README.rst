@@ -5,7 +5,7 @@
  My Remote Who
 ---------------
 
-mrw is an attempt at writing an implementation of a centralized ``who`` system, inspired by `grawity`_'s _rwho, in python.
+mrw is an attempt at writing an implementation of a centralized ``who`` system, inspired by `grawity`_'s rwho_, in python.
 
 The server component uses flask to serve the API, HTTP Basic Auth for the authentication, and msgpack for the content submitted to it, though it is easy to add other over-the-wirte formats.
 
