@@ -42,10 +42,20 @@ def update_utmp(db, hostname, logins):
 @app.route('/update', methods=['PUT'])
 @requires_auth(check_auth)
 def update():
+	'''API endpoint for submitting utmp data to
+
+	:return: status code 400 - unsupported Content-Type
+	:return: status code 200 - successful submission
+	'''
+
 	hostname = request.authorization.username
-	logins = msgpack.unpackb(request.data, encoding='utf-8')
+	if request.headers['content-type'] == 'application/x-msgpack':
+		logins = msgpack.unpackb(request.data, encoding='utf-8')
+	else:
+		return Response(status=400)
+
 	update_utmp(g.db, hostname, logins)
-	return 'Update successful for host {}'.format(hostname)
+	return Response('Update successful for host {}'.format(hostname), status=200)
 
 
 if __name__ == '__main__':
