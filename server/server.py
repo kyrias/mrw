@@ -26,6 +26,7 @@ def connect_db():
 @app.before_request
 def before_request():
 	g.db = connect_db()
+	g.db.row_factory = sqlite3.Row
 
 @app.teardown_request
 def teardown_request(exception):
@@ -48,6 +49,14 @@ def update_utmp(db, hostname, logins):
 		login['updated'] = int(datetime.datetime.now().timestamp())
 		cursor.execute(insert_query, login)
 	db.commit()
+
+
+def dict_from_rows(rows):
+	'''Convert a list of sqlite3.Row to a list of dicts'''
+	l = []
+	for row in rows:
+		l += [dict(zip(row.keys(), row))]
+	return l
 
 
 @app.route('/update', methods=['PUT'])
