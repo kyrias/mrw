@@ -87,6 +87,13 @@ def list():
 		return Response(msgpack.packb(logins), 200,
 		                {'Content-Type': 'application/x-msgpack'})
 
+	else:
+		response = ''
+		for login in logins:
+			response += 'user {} connected to host {} on line {} from {}\n'.format(
+			            login['user'], login['host'], login['line'], login['rhost'])
+		return response
+
 
 if __name__ == '__main__':
 	db_path = app.config['DATABASE']
