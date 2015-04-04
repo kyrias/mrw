@@ -7,12 +7,14 @@ def authenticate():
 	                'You have to login with proper credentials', 401,
 	                {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
-def requires_auth(func):
-	@wraps(func)
-	def decorated(*args, **kwargs):
-		auth = request.authorization
-		if not auth or not check_auth(auth.username, auth.password):
-			return authenticate()
-		return func(*args, **kwargs)
-	return decorated
+def requires_auth(check_auth):
+	def decorator(func):
+		@wraps(func)
+		def decorated(*args, **kwargs):
+			auth = request.authorization
+			if not auth or not check_auth(auth.username, auth.password):
+				return authenticate()
+			return func(*args, **kwargs)
+		return decorated
+	return decorator
 

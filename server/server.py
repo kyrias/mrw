@@ -40,7 +40,7 @@ def update_utmp(db, hostname, logins):
 
 
 @app.route('/update', methods=['PUT'])
-@requires_auth
+@requires_auth(check_auth)
 def update():
 	hostname = request.authorization.username
 	logins = msgpack.unpackb(request.data, encoding='utf-8')
