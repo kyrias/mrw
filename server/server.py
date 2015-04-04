@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config.from_object('config')
 
 insert_query = '''INSERT INTO utmp (host, user, uid, rhost, line, time, updated)
-                         VALUES (:host, :user, :uid, :rhost, :line, :time, :updated)'''
+                    VALUES (:host, :user, :uid, :rhost, :line, :time, :updated)'''
 delete_query = '''DELETE FROM utmp WHERE host = ?'''
 
 
