@@ -26,15 +26,16 @@ def record_to_dict(record):
 	}
 	return login
 
-def upload():
+def upload(headers={}):
 	logins = parse_utmp(config.utmp_file)
 	login_list = []
+	headers.update({'Content-Type': 'application/x-msgpack'})
 
 	for login in logins:
 		login_list.append(record_to_dict(login))
 
 	data = msgpack.packb(login_list)
-	requests.put(config.server_endpoint, data=data,
+	requests.put(config.server_endpoint, data=data, headers=headers,
 	             auth=(platform.node(), config.password))
 
 def main():
