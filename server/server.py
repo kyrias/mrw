@@ -1,6 +1,5 @@
 from flask import Flask, request, g, Response
-from contextlib import closing
-from functools import wraps
+from auth import requires_auth
 import sqlite3, msgpack, datetime
 
 app = Flask(__name__)
@@ -29,21 +28,6 @@ def check_auth(hostname, password):
 		return password == app.config['CREDENTIALS'][hostname]
 	else:
 		return False
-
-def authenticate():
-	"""Sends a 401 response that enables basic auth"""
-	return Response('Could not verify your access level for that URL.\n'
-	                'You have to login with proper credentials', 401,
-	                {'WWW-Authenticate': 'Basic realm="Login Required"'})
-
-def requires_auth(f):
-	@wraps(f)
-	def decorated(*args, **kwargs):
-		auth = request.authorization
-		if not auth or not check_auth(auth.username, auth.password):
-			return authenticate()
-		return f(*args, **kwargs)
-	return decorated
 
 
 def update_utmp(db, hostname, logins):
