@@ -92,11 +92,12 @@ def list():
 		                {'Content-Type': 'application/json'})
 
 	else:
-		response = ''
+		text = ''
 		for login in logins:
-			response += 'user {} connected to host {} on line {} from {}\n'.format(
-			            login['user'], login['host'], login['line'], login['rhost'])
-		return response
+			text += 'user {} connected to host {} on line {} from {}\n'.format(
+			        login['user'], login['host'], login['line'], login['rhost'])
+		return Response(text, 200,
+		                {'Content-Type': 'text/plain'})
 
 
 if __name__ == '__main__':
