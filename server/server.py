@@ -1,6 +1,6 @@
 from flask import Flask, request, g, Response
 from auth import requires_auth
-import sqlite3, msgpack, datetime
+import datetime, msgpack, os.path, sqlite3
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -9,8 +9,18 @@ insert_query = '''INSERT INTO utmp (host, user, uid, rhost, line, time, updated)
                          VALUES (:host, :user, :uid, :rhost, :line, :time, :updated)'''
 delete_query = '''DELETE FROM utmp WHERE host = ?'''
 
+
+def init_db():
+	with app.app_context():
+		db = connect_db()
+		with app.open_resource('schema.sql', mode='r') as f:
+			db.cursor().executescript(f.read())
+		db.commit()
+		db.close()
+
 def connect_db():
-	return sqlite3.connect(app.config['DATABASE'])
+	db_path = app.config['DATABASE']
+	return sqlite3.connect(db_path)
 
 
 @app.before_request
@@ -60,4 +70,8 @@ def update():
 
 
 if __name__ == '__main__':
+	db_path = app.config['DATABASE']
+	if not os.path.isfile(db_path):
+		init_db()
+
 	app.run(port=app.config['PORT'])
